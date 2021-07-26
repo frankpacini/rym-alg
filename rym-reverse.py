@@ -122,10 +122,10 @@ def getModel(X, y):
     units = [30, 45, 60, 75, 90]
     ell = range(2,11)
     for e in range(1):
-        inputs = keras.Input(shape=(12,))
+        inputs = keras.Input(shape=(2,))
         x = inputs
-        for _ in range(0,5):
-            x = layers.Dense(64, activation="relu")(x)
+        for _ in range(0,10):
+            x = layers.Dense(10, activation="relu")(x)
         outputs = layers.Dense(1)(x)
         model = keras.Model(inputs=inputs, outputs=outputs, name="rym_model")
 
@@ -134,21 +134,21 @@ def getModel(X, y):
             optimizer=keras.optimizers.Adam(),
         )
 
-        history = model.fit(X_train, y_train, batch_size=X_train.shape[0], epochs=500, validation_split=0.2)
+        history = model.fit(X_train, y_train, batch_size=X_train.shape[0], epochs=200, validation_split=0.2)
         train_errors.append(history.history['loss'][-1])
         cv_errors.append(model.evaluate(X_cv, y_cv, verbose=2))
         print(model.evaluate(X_test, y_test, verbose=2))
         #plt.show()
         #models.append(model.evaluate(X_cv, y_cv, verbose=2))
-        """
+
         print(model.evaluate(norm_X, norm_y, verbose=2))
-        test(model, X, y)
+        # test(model, X, y)
         print()
         save = input("Save model (Y/N)?: ")
         if save == 'y' or save == 'Y':
-            model.save(m)
+            model.save('./model6')
         
-    
+    """
     plt.plot(ell, train_errors, label='train')
     plt.plot(ell, cv_errors, label='cv')
     plt.xlabel('layers')
@@ -188,7 +188,7 @@ links = arr.astype("str")[:,0]
 
 #getData(links)
 
-X = np.array(list(csv.reader(open("rym.csv", "r"), delimiter=","))).astype("float")
+X = np.array(list(csv.reader(open("rym.csv", "r"), delimiter=","))).astype("float")[:,:2]
 y = arr[:,1].astype("int")
 end = np.nonzero(X[:,0]==1.0)[0][0]
 X = X[:end]
